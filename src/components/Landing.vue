@@ -20,7 +20,11 @@ export default {
   methods: {
     signIn () {
       const blockstack = this.blockstack
-      blockstack.redirectToSignIn()
+      //  blockstack.redirectToSignIn()  //  Lup Yuen
+
+      //  Lup Yuen
+      const origin = window.location.origin
+      blockstack.redirectToSignIn(origin, origin + '/manifest.json', ['store_write', 'publish_data'])
     }
   }
 }
