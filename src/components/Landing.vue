@@ -22,7 +22,7 @@ export default {
       const blockstack = this.blockstack
       //  blockstack.redirectToSignIn()  //  Lup Yuen
 
-      //  Lup Yuen
+      //  Lup Yuen: Get permission to publish data
       const origin = window.location.origin
       blockstack.redirectToSignIn(origin, origin + '/manifest.json', ['store_write', 'publish_data'])
     }

@@ -99,6 +99,21 @@ export default {
       })
     },
 
+    fetchData2 () {
+      //  Lup Yuen
+      let options = {
+        user: 'ryan.id', // the Blockstack ID of the user for which to lookup the file
+        app: 'http://BlockstackApp.com' // origin of the app this file is stored for
+      }
+
+      const blockstack = this.blockstack
+      blockstack.getFile('/message.txt', options)
+      .then((fileContents) => {
+        // get the contents of the file /message.txt
+        console.log({ fileContents })
+      })
+    },
+
     signOut () {
       this.blockstack.signUserOut(window.location.href)
     }
