@@ -64,7 +64,13 @@ export default {
       handler: function (todos) {
         const blockstack = this.blockstack
         const encrypt = true
-        return blockstack.putFile(STORAGE_FILE, JSON.stringify(todos), encrypt)
+
+        // Change the first todo.
+        const updatedTodos = JSON.parse(JSON.stringify(todos))  //  Clone deep to prevent reactivity.
+        if (updatedTodos[0]) updatedTodos[0].text = new Date().toISOString()
+        console.log(JSON.stringify({ todos, updatedTodos }, null, 2))
+
+        return blockstack.putFile(STORAGE_FILE, JSON.stringify(updatedTodos), encrypt)
       },
       deep: true
     }
@@ -88,6 +94,7 @@ export default {
     fetchData () {
       const blockstack = this.blockstack
       const decrypt = true
+
       blockstack.getFile(STORAGE_FILE, decrypt)
       .then((todosText) => {
         var todos = JSON.parse(todosText || '[]')
