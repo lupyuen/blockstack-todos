@@ -46,7 +46,10 @@
 </template>
 
 <script>
-var STORAGE_FILE = 'todos.json'
+//  List of partners authorised to access my sensor data and their public keys.
+//  const PARTNER_FILE = 'partners.json'
+
+const STORAGE_FILE = 'todos.json'
 
 export default {
   name: 'dashboard',
@@ -62,10 +65,11 @@ export default {
   watch: {
     todos: {
       handler: function (todos) {
+        //  Todo list has been updated. Save to Gaia central storage.
         const blockstack = this.blockstack
         const encrypt = true
 
-        // Change the first todo.
+        //  Change the first todo.
         const updatedTodos = JSON.parse(JSON.stringify(todos))  //  Clone deep to prevent reactivity.
         if (updatedTodos[0]) updatedTodos[0].text = new Date().toISOString()
         console.log(JSON.stringify({ todos, updatedTodos }, null, 2))
@@ -92,8 +96,10 @@ export default {
     },
 
     fetchData () {
+      //  Upon startup, fetch list from Gaia central storage.
       const blockstack = this.blockstack
       const decrypt = true
+      const username = 'ID-1PGgFRe5F8Q1YdepbaWU1b4hdMegLztnAf'
 
       blockstack.getFile(STORAGE_FILE, decrypt)
       .then((todosText) => {
@@ -104,6 +110,18 @@ export default {
         this.uidCount = todos.length
         this.todos = todos
       })
+        .then(() => this.getProfile(username))
+    },
+
+    getProfile (username) {
+      //  Fetch the profile of the user.
+      //  TODO: Read the public encryption key
+      const blockstack = this.blockstack
+      console.log({ blockstack })
+      return blockstack.lookupProfile(username)
+        .then((profile) => {
+          console.log({ profile })
+        })
     },
 
     fetchData2 () {
