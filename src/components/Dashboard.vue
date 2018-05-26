@@ -102,7 +102,7 @@ export default {
       const username = 'lupyuen.id'
       // const username = 'iotsensor.id'
       const content = 'testing123'
-      const encrypted = {
+      const encrypted = {  //  Encrypted with lupyuen.id
         iv: 'cc76e3510e0b85cc6559e71efa0b7399',
         ephemeralPK: '03a06e82ac145ca64b97907e9acf908c231dd9041778a6b430ae1c106e6705e99f',
         cipherText: 'f6e9a4e8be019ec1278f18d17ebfca7b',
