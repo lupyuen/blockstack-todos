@@ -99,7 +99,9 @@ export default {
       //  Upon startup, fetch list from Gaia central storage.
       const blockstack = this.blockstack
       const decrypt = true
-      const username = 'ID-1PGgFRe5F8Q1YdepbaWU1b4hdMegLztnAf'
+      const username = 'lupyuen.id'
+      // const username = 'iotsensor.id'
+      const content = 'testing123'
 
       blockstack.getFile(STORAGE_FILE, decrypt)
       .then((todosText) => {
@@ -111,17 +113,42 @@ export default {
         this.todos = todos
       })
         .then(() => this.getProfile(username))
+        .then(() => {
+          const encryptedContent = this.encryptContent(content)
+          const decryptedContent = this.decryptContent(encryptedContent)
+          console.log({ encryptedContent, decryptedContent })
+        })
+        .then(() => {
+          const encryptedContent = this.encryptContent(content)
+          const decryptedContent = this.decryptContent(encryptedContent)
+          console.log({ encryptedContent, decryptedContent })
+        })
     },
 
     getProfile (username) {
       //  Fetch the profile of the user.
       //  TODO: Read the public encryption key
       const blockstack = this.blockstack
-      console.log({ blockstack })
       return blockstack.lookupProfile(username)
         .then((profile) => {
           console.log({ profile })
         })
+    },
+
+    encryptContent (content) {
+      //  Encrypt the content for the user.
+      const blockstack = this.blockstack
+      const encryptedContent = blockstack.encryptContent(content)
+      console.log({ encryptedContent })
+      return encryptedContent
+    },
+
+    decryptContent (content) {
+      //  Decrypt the content for the user.
+      const blockstack = this.blockstack
+      const decryptedContent = blockstack.decryptContent(content)
+      console.log({ decryptedContent })
+      return decryptedContent
     },
 
     fetchData2 () {
