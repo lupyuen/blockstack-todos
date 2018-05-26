@@ -102,6 +102,13 @@ export default {
       const username = 'lupyuen.id'
       // const username = 'iotsensor.id'
       const content = 'testing123'
+      const encrypted = {
+        iv: 'cc76e3510e0b85cc6559e71efa0b7399',
+        ephemeralPK: '03a06e82ac145ca64b97907e9acf908c231dd9041778a6b430ae1c106e6705e99f',
+        cipherText: 'f6e9a4e8be019ec1278f18d17ebfca7b',
+        mac: 'e9246128e764a99324c9789f8d711f9791eb1ea9c0af0b52e625e0b2eb1b9221',
+        wasString: true
+      }
 
       blockstack.getFile(STORAGE_FILE, decrypt)
       .then((todosText) => {
@@ -116,12 +123,17 @@ export default {
         .then(() => {
           const encryptedContent = this.encryptContent(content)
           const decryptedContent = this.decryptContent(encryptedContent)
-          console.log({ encryptedContent, decryptedContent })
+          console.log({ encryptedContent, decryptedContent }, JSON.stringify(encryptedContent))
         })
         .then(() => {
           const encryptedContent = this.encryptContent(content)
           const decryptedContent = this.decryptContent(encryptedContent)
           console.log({ encryptedContent, decryptedContent })
+        })
+        .then(() => {
+          const encryptedJSON = JSON.stringify(encrypted)
+          const decrypted = this.decryptContent(encryptedJSON)
+          console.log({ decrypted })
         })
     },
 
