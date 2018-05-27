@@ -136,8 +136,9 @@ export default {
           const decrypted = this.decryptContent(encryptedJSON)
           console.log({ decrypted })
         })
-        */
         .then(() => this.generateKey())
+        */
+        .then(() => this.testCrypto())
     },
 
     testCrypto () {
@@ -172,14 +173,17 @@ export default {
       let decryptPromise = null
       let decryptedData = null
 
+      let crypto = window.crypto || window.msCrypto
       let vector = crypto.getRandomValues(new Uint8Array(16))
 
-      let crypto = window.crypto || window.msCrypto
-
       if (crypto.subtle) {
-        alert('Cryptography API Supported')
-
-        promiseKey = crypto.subtle.generateKey({name: 'RSA-OAEP', modulusLength: 2048, publicExponent: new Uint8Array([0x01, 0x00, 0x01]), hash: {name: 'SHA-256'}}, false, ['encrypt', 'decrypt'])
+        console.log('Cryptography API Supported')
+        promiseKey = crypto.subtle.generateKey({
+          name: 'RSA-OAEP',
+          modulusLength: 2048,
+          publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
+          hash: { name: 'SHA-256' }
+        }, false, ['encrypt', 'decrypt'])
 
         promiseKey.then((key) => {
           privateKeyObject = key.privateKey
