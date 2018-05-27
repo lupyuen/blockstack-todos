@@ -5,3 +5,6 @@ ssh-keygen -e -f "%userprofile%\.ssh\github_rsa.pub" -m PKCS8 > \temp\public_key
 cat \temp\public_key.pkcs8
 
 openssl rsautl -encrypt -inkey \temp\public_key.pkcs8 -pubin -in \temp\encrypt.txt -out \temp\encrypt.dat
+
+
+ssh-keygen -e -f "%userprofile%\.ssh\github_rsa.pub"
