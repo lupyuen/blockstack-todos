@@ -162,17 +162,12 @@ export default {
 
       let privateKeyObject = null
       let publicKeyObject = null
-
       let promiseKey = null
-
       let encryptedData = null
       let encryptPromise = null
-
       let data = 'QNimate'
-
       let decryptPromise = null
       let decryptedData = null
-
       let crypto = window.crypto || window.msCrypto
       let vector = crypto.getRandomValues(new Uint8Array(16))
 
@@ -183,13 +178,31 @@ export default {
           modulusLength: 2048,
           publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
           hash: { name: 'SHA-256' }
-        }, false, ['encrypt', 'decrypt'])
+        }, true, ['encrypt', 'decrypt'])
 
         promiseKey.then((key) => {
+          console.log({ key })
           privateKeyObject = key.privateKey
           publicKeyObject = key.publicKey
-
           encryptData()
+
+          crypto.subtle.exportKey('jwk', privateKeyObject).then((result) => {
+            const jsonPrivateKey = result
+            const stringPrivateKey = JSON.stringify(jsonPrivateKey)
+            console.log({ jsonPrivateKey })
+            crypto.subtle.importKey('jwk', JSON.parse(stringPrivateKey), {
+              name: 'RSA-OAEP',
+              modulusLength: 2048,
+              publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
+              hash: {name: 'SHA-256'}
+            }, true, ['decrypt']).then((e) => {
+              console.log(e)
+            }, (e) => {
+              console.log(e)
+            })
+          }, (e) => {
+            console.log(e.message)
+          })
         })
 
         promiseKey.catch = (e) => {
