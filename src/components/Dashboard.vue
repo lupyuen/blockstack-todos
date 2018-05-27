@@ -102,13 +102,13 @@ export default {
       const username = 'lupyuen.id'
       // const username = 'iotsensor.id'
       const content = 'testing123'
-      const encrypted = {
+      /* const encrypted = {  //  Encrypted with lupyuen.id
         iv: 'cc76e3510e0b85cc6559e71efa0b7399',
         ephemeralPK: '03a06e82ac145ca64b97907e9acf908c231dd9041778a6b430ae1c106e6705e99f',
         cipherText: 'f6e9a4e8be019ec1278f18d17ebfca7b',
         mac: 'e9246128e764a99324c9789f8d711f9791eb1ea9c0af0b52e625e0b2eb1b9221',
         wasString: true
-      }
+      } */
 
       blockstack.getFile(STORAGE_FILE, decrypt)
       .then((todosText) => {
@@ -130,10 +130,120 @@ export default {
           const decryptedContent = this.decryptContent(encryptedContent)
           console.log({ encryptedContent, decryptedContent })
         })
+        /*
         .then(() => {
           const encryptedJSON = JSON.stringify(encrypted)
           const decrypted = this.decryptContent(encryptedJSON)
           console.log({ decrypted })
+        })
+        */
+        .then(() => this.generateKey())
+    },
+
+    testCrypto () {
+      //  Based on http://qnimate.com/asymmetric-encryption-using-web-cryptography-api/
+
+      function convertStringToArrayBufferView (str) {
+        let bytes = new Uint8Array(str.length)
+        for (let iii = 0; iii < str.length; iii++) {
+          bytes[iii] = str.charCodeAt(iii)
+        }
+        return bytes
+      }
+
+      function convertArrayBufferViewtoString (buffer) {
+        let str = ''
+        for (let iii = 0; iii < buffer.byteLength; iii++) {
+          str += String.fromCharCode(buffer[iii])
+        }
+        return str
+      }
+
+      let privateKeyObject = null
+      let publicKeyObject = null
+
+      let promiseKey = null
+
+      let encryptedData = null
+      let encryptPromise = null
+
+      let data = 'QNimate'
+
+      let decryptPromise = null
+      let decryptedData = null
+
+      let vector = crypto.getRandomValues(new Uint8Array(16))
+
+      let crypto = window.crypto || window.msCrypto
+
+      if (crypto.subtle) {
+        alert('Cryptography API Supported')
+
+        promiseKey = crypto.subtle.generateKey({name: 'RSA-OAEP', modulusLength: 2048, publicExponent: new Uint8Array([0x01, 0x00, 0x01]), hash: {name: 'SHA-256'}}, false, ['encrypt', 'decrypt'])
+
+        promiseKey.then((key) => {
+          privateKeyObject = key.privateKey
+          publicKeyObject = key.publicKey
+
+          encryptData()
+        })
+
+        promiseKey.catch = (e) => {
+          console.log(e.message)
+        }
+      } else {
+        alert('Cryptography API not Supported')
+      }
+
+      function encryptData () {
+        encryptPromise = crypto.subtle.encrypt(
+          {name: 'RSA-OAEP', iv: vector}, publicKeyObject,
+          convertStringToArrayBufferView(data))
+
+        encryptPromise.then(
+          (result) => {
+            encryptedData = new Uint8Array(result)
+            decryptData()
+          },
+          (e) => {
+            console.log(e.message)
+          }
+        )
+      }
+
+      function decryptData () {
+        decryptPromise = crypto.subtle.decrypt(
+          {name: 'RSA-OAEP', iv: vector}, privateKeyObject, encryptedData)
+
+        decryptPromise.then(
+          (result) => {
+            decryptedData = new Uint8Array(result)
+            console.log(convertArrayBufferViewtoString(decryptedData))
+          },
+          (e) => {
+            console.log(e.message)
+          }
+        )
+      }
+    },
+
+    generateKey () {
+      return window.crypto.subtle.generateKey(
+        {
+          name: 'AES-CBC',
+          length: 256 // can be  128, 192, or 256
+        },
+        false, // whether the key is extractable (i.e. can be used in exportKey)
+        ['encrypt', 'decrypt'] // can be "encrypt", "decrypt", "wrapKey", or "unwrapKey"
+      )
+        .then((key) => {
+          // returns a key object
+          console.log(key)
+          return key
+        })
+        .catch((err) => {
+          console.error(err)
+          throw err
         })
     },
 
