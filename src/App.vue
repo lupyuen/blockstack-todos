@@ -23,6 +23,7 @@ export default {
       this.userData = blockstack.loadUserData()
       this.user = new blockstack.Person(this.userData.profile)
       this.user.username = this.userData.username
+      console.log({ userData: this.userData, user: this.user })
     } else if (blockstack.isSignInPending()) {
       blockstack.handlePendingSignIn()
       .then((userData) => {
