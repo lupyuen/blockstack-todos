@@ -65,15 +65,12 @@ const privateKeyBASE64 = 'MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDioS
 //  *********************************************************************************
 //  region Auxiliary functions
 //  *********************************************************************************
-function formatPEM(pemString)
-{
+function formatPEM (pemString) {
   const stringLength = pemString.length
   let resultString = ''
 
-  for(let i = 0, count = 0; i < stringLength; i++, count++)
-  {
-    if(count > 63)
-    {
+  for (let i = 0, count = 0; i < stringLength; i++, count++) {
+    if (count > 63) {
       resultString = `${resultString}\r\n`
       count = 0
     }
@@ -84,16 +81,14 @@ function formatPEM(pemString)
   return resultString
 }
 //  *********************************************************************************
-function destroyClickedElement(event)
-{
+function destroyClickedElement (event) {
   // noinspection XHTMLIncompatabilitiesJS
   document.body.removeChild(event.target)
 }
 //  *********************************************************************************
 //  endregion
 //  *********************************************************************************
-function passwordBasedIntegrityInternal(password, hash = 'SHA-256')
-{
+function passwordBasedIntegrityInternal (password, hash = 'SHA-256') {
   //  region Initial variables
   let sequence = Promise.resolve()
   //  endregion
@@ -167,13 +162,12 @@ function passwordBasedIntegrityInternal(password, hash = 'SHA-256')
   return sequence
 }
 //  *********************************************************************************
-function passwordBasedIntegrity(password)
-{
-  if(typeof password === 'undefined')
+function passwordBasedIntegrity (password) {
+  if (typeof password === 'undefined') {
     password = document.getElementById('password2').value
+  }
 
-  return Promise.resolve().then(() => passwordBasedIntegrityInternal(password)).then(result =>
-  {
+  return Promise.resolve().then(() => passwordBasedIntegrityInternal(password)).then(result => {
     const pkcs12AsBlob = new Blob([result], { type: 'application/x-pkcs12' })
     const downloadLink = document.createElement('a')
     downloadLink.download = 'pkijs_pkcs12.p12'
@@ -190,8 +184,7 @@ function passwordBasedIntegrity(password)
   })
 }
 //  *********************************************************************************
-function certificateBasedIntegrityInternal()
-{
+function certificateBasedIntegrityInternal () {
   //  region Initial variables
   let sequence = Promise.resolve()
   //  endregion
@@ -206,8 +199,9 @@ function certificateBasedIntegrityInternal()
 
   //  region Get a "crypto" extension
   const crypto = getCrypto()
-  if(typeof crypto === 'undefined')
+  if (typeof crypto === 'undefined') {
     return Promise.reject('No WebCrypto extension found')
+  }
   //  endregion
 
   //  region Put initial values for PKCS#12 structures
@@ -256,8 +250,7 @@ function certificateBasedIntegrityInternal()
   //  region Import PKCS#8 key into WebCrypto key
   sequence = sequence.then(
     () => certSimpl.getPublicKey().then(
-      result =>
-      {
+      result => {
         const algorithm = getAlgorithmParameters(result.algorithm.name, 'importkey')
 
         return crypto.importKey('pkcs8',
@@ -287,10 +280,8 @@ function certificateBasedIntegrityInternal()
   return sequence
 }
 //  *********************************************************************************
-function certificateBasedIntegrity()
-{
-  return Promise.resolve().then(() => certificateBasedIntegrityInternal()).then(result =>
-  {
+function certificateBasedIntegrity () {
+  return Promise.resolve().then(() => certificateBasedIntegrityInternal()).then(result => {
     const pkcs12AsBlob = new Blob([result], { type: 'application/x-pkcs12' })
     const downloadLink = document.createElement('a')
     downloadLink.download = 'pkijs_pkcs12.p12'
@@ -307,18 +298,15 @@ function certificateBasedIntegrity()
   })
 }
 //  *********************************************************************************
-function noPrivacyInternal(password)
-{
+function noPrivacyInternal (password) {
   return passwordBasedIntegrityInternal(password)
 }
 //  *********************************************************************************
-function noPrivacy()
-{
+function noPrivacy () {
   return passwordBasedIntegrity(document.getElementById('password3').value) // Same with previous example
 }
 //  *********************************************************************************
-function passwordPrivacyInternal(password)
-{
+function passwordPrivacyInternal (password) {
   //  region Initial variables
   let sequence = Promise.resolve()
 
@@ -400,10 +388,8 @@ function passwordPrivacyInternal(password)
   return sequence
 }
 //  *********************************************************************************
-function passwordPrivacy()
-{
-  return Promise.resolve().then(() => passwordPrivacyInternal(document.getElementById('password4').value)).then(result =>
-  {
+function passwordPrivacy () {
+  return Promise.resolve().then(() => passwordPrivacyInternal(document.getElementById('password4').value)).then(result => {
     const pkcs12AsBlob = new Blob([result], { type: 'application/x-pkcs12' })
     const downloadLink = document.createElement('a')
     downloadLink.download = 'pkijs_pkcs12.p12'
@@ -420,8 +406,7 @@ function passwordPrivacy()
   })
 }
 //  *********************************************************************************
-function certificatePrivacyInternal(password)
-{
+function certificatePrivacyInternal (password) {
   //  region Initial variables
   let sequence = Promise.resolve()
   //  endregion
@@ -499,10 +484,8 @@ function certificatePrivacyInternal(password)
   return sequence
 }
 //  *********************************************************************************
-function certificatePrivacy()
-{
-  return Promise.resolve().then(() => certificatePrivacyInternal(document.getElementById('password5').value)).then(result =>
-  {
+function certificatePrivacy () {
+  return Promise.resolve().then(() => certificatePrivacyInternal(document.getElementById('password5').value)).then(result => {
     const pkcs12AsBlob = new Blob([result], { type: 'application/x-pkcs12' })
     const downloadLink = document.createElement('a')
     downloadLink.download = 'pkijs_pkcs12.p12'
@@ -519,8 +502,7 @@ function certificatePrivacy()
   })
 }
 //  *********************************************************************************
-function openSSLLikeInternal(password)
-{
+function openSSLLikeInternal (password) {
   //  region Initial variables
   let sequence = Promise.resolve()
 
@@ -701,10 +683,8 @@ function openSSLLikeInternal(password)
   return sequence
 }
 //  *********************************************************************************
-function openSSLLike()
-{
-  return Promise.resolve().then(() => openSSLLikeInternal(document.getElementById('password1').value)).then(result =>
-  {
+function openSSLLike () {
+  return Promise.resolve().then(() => openSSLLikeInternal(document.getElementById('password1').value)).then(result => {
     const pkcs12AsBlob = new Blob([result], { type: 'application/x-pkcs12' })
     const downloadLink = document.createElement('a')
     downloadLink.download = 'pkijs_pkcs12.p12'
@@ -721,8 +701,7 @@ function openSSLLike()
   })
 }
 //  *********************************************************************************
-function parsePKCS12Internal(buffer, password)
-{
+function parsePKCS12Internal (buffer, password) {
   //  region Initial variables
   let sequence = Promise.resolve()
 
@@ -775,10 +754,8 @@ function parsePKCS12Internal(buffer, password)
   return sequence
 }
 //  *********************************************************************************
-function parsePKCS12(buffer)
-{
-  return Promise.resolve().then(() => parsePKCS12Internal(buffer, document.getElementById('password').value)).then(pkcs12 =>
-  {
+function parsePKCS12 (buffer) {
+  return Promise.resolve().then(() => parsePKCS12Internal(buffer, document.getElementById('password').value)).then(pkcs12 => {
     //  region Initial variables
     let result = ''
     //  endregion
@@ -804,16 +781,14 @@ function parsePKCS12(buffer)
   })
 }
 //  *********************************************************************************
-function handlePKCS12(evt)
-{
+function handlePKCS12 (evt) {
   const tempReader = new FileReader()
 
   const currentFiles = evt.target.files
 
   // noinspection AnonymousFunctionJS
   tempReader.onload =
-    event =>
-    {
+    event => {
       // noinspection JSUnresolvedVariable
       parsePKCS12(event.target.result)
     }
@@ -821,24 +796,24 @@ function handlePKCS12(evt)
   tempReader.readAsArrayBuffer(currentFiles[0])
 }
 //  *********************************************************************************
-context('Hack for Rollup.js', () =>
-{
-  return
-
+context('Hack for Rollup.js', () => {
+  // return ////
   // noinspection UnreachableCodeJS
-  passwordBasedIntegrity()
-  certificateBasedIntegrity()
-  noPrivacy()
-  passwordPrivacy()
-  certificatePrivacy()
-  openSSLLike()
-  parsePKCS12()
-  handlePKCS12()
-  setEngine()
+  const enableHack = false
+  if (enableHack) {
+    passwordBasedIntegrity()
+    certificateBasedIntegrity()
+    noPrivacy()
+    passwordPrivacy()
+    certificatePrivacy()
+    openSSLLike()
+    parsePKCS12()
+    handlePKCS12()
+    setEngine()
+  }
 })
 //  **********************************************************************************
-context('PKCS#12 Simple Example', () =>
-{
+context('PKCS#12 Simple Example', () => {
   //  region Initial variables
   const password = '12345567890'
   //  endregion
@@ -860,6 +835,9 @@ context('PKCS#12 Simple Example', () =>
   it('Making OpenSSL-like PKCS#12 Data', () => openSSLLikeInternal(password).then(result => parsePKCS12Internal(result, password)))
 })
 //  **********************************************************************************
+
+function context () {}
+function it () {}
 
 //  ////////////////////////////////////////////////////////////////////////////
 //  List of partners authorised to access my sensor data and their public keys.

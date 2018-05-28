@@ -11,11 +11,13 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
+    "asn1js": "^2.0.20",
     "axios": "^0.16.1",
     "blockstack": "^17.2.0",
     "bootstrap-sass": "^3.3.7",
     "node-sass": "^4.5.3",
     "pkijs": "^2.1.54",
+    "pvutils": "^1.0.14",
     "sass-loader": "^6.0.5",
     "vue": "^2.3.3",
     "vue-router": "^2.3.1"
